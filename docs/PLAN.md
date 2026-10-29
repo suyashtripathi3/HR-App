@@ -51,3 +51,27 @@ in groups — with data synced through a backend, not stored only on-device.
   formula, equal-split remainder rule, group net balance
 - Mobile: theme tokens, API client, navigation skeleton
 - No secrets committed (`.env.example` only); no DB wired yet
+
+## All modules — dev implementation (2026-10-29)
+
+All backend modules are implemented and covered by an end-to-end test
+(`backend/tests/e2e.test.js`, plus the money/health tests):
+
+auth, users/me, accounts, categories, transactions (with idempotency
+and cursor pagination), dashboard, budgets, goals, recurring rules
+(at-most-once processing), groups + Group Hisab splits/settlements,
+reports, CSV export, and notifications (budget alerts + upcoming
+recurring).
+
+Storage is currently an in-memory store shaped like the planned
+MongoDB collections, so it can be swapped for Mongoose later. It is
+NOT production storage. Verification codes in dev/test are returned
+or fixed (`123456` in tests) only because no email/SMS provider is
+wired yet — production must send codes via a provider and never
+return them. Passwords use bcryptjs here; the plan prefers Argon2id,
+which is the swap to make before production.
+
+Correction found by testing: the shared plan's group-balance
+settlement signs do not settle to zero, so the implementation uses
+Net = Paid − Share − SettlementsReceived + SettlementsPaid, which
+does. Settlement over the outstanding amount is rejected.

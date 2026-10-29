@@ -13,9 +13,11 @@ and savings goals, and settle shared Group Hisab expenses.
   See `mobile/README.md` for local Android setup; this repo does not
   yet contain a built APK.
 
-## Phase 1 (current)
+## Current status (2026-10-29)
 
-Foundation only: backend health endpoint, money/split logic with
-tests, theme tokens, API client, and navigation skeleton.
-Next: Phase 2 authentication (needs email/SMS provider choice +
-MongoDB Atlas setup — those are not configured yet).
+All backend modules are implemented in dev form (in-memory store,
+not MongoDB yet) and pass tests: auth, accounts, transactions,
+dashboard, budgets, goals, recurring, groups, reports, export.
+See `docs/PLAN.md` for the dev-vs-production notes.
+Next: swap the in-memory store for MongoDB Atlas + Mongoose, and
+wire a real email/SMS provider for verification codes.

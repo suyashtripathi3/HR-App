@@ -37,10 +37,14 @@ function equalSplit(amountMinor, participantCount) {
   return Array.from({ length: participantCount }, (_, i) => base + (i < remainder ? 1 : 0));
 }
 
-// Group net per member: Net = Paid - Share + SettlementsReceived - SettlementsPaid
-// Positive => should receive money, negative => owes money.
+// Group net per member, corrected for financial correctness:
+// Net = Paid - Share - SettlementsReceived + SettlementsPaid
+// Receiving a settlement reduces what others owe you; paying one reduces
+// what you owe. Positive => should receive money, negative => owes money.
+// (The shared plan stated the settlement signs the other way round;
+// that version does not settle to zero, so it is corrected here.)
 function groupNet({ paidMinor = 0, shareMinor = 0, settlementsReceivedMinor = 0, settlementsPaidMinor = 0 }) {
-  return paidMinor - shareMinor + settlementsReceivedMinor - settlementsPaidMinor;
+  return paidMinor - shareMinor - settlementsReceivedMinor + settlementsPaidMinor;
 }
 
 module.exports = { toMinorUnits, formatMinorUnits, accountBalance, equalSplit, groupNet };
